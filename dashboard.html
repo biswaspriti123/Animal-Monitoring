@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Animal Dashboard</title>
+  <style>
+    #map { height: 300px; }
+    canvas { max-width: 600px; }
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+  <h1>Animal Monitoring Dashboard</h1>
+  <div id="map"></div>
+  <canvas id="heartChart"></canvas>
+  <canvas id="tempChart"></canvas>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const map = L.map('map').setView([10.5, 76.5], 10);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    let marker = null;
+
+    async function fetchData() {
+      const res = await fetch('https://animal-api-url/animals'); // We'll update this later
+      const data = await res.json();
+      const animal = data["tiger-001"];
+      if (!animal) return;
+
+      const [lat, lon] = animal.location;
+      if (marker) {
+        marker.setLatLng([lat, lon]);
+      } else {
+        marker = L.marker([lat, lon]).addTo(map);
+      }
+
+      updateCharts(animal.heart_rate, animal.temperature);
+    }
+
+    let heartData = [];
+    let tempData = [];
+
+    const heartChart = new Chart(document.getElementById('heartChart'), {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{ label: 'Heart Rate', data: heartData, borderColor: 'red' }]
+      }
+    });
+
+    const tempChart = new Chart(document.getElementById('tempChart'), {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{ label: 'Temperature', data: tempData, borderColor: 'blue' }]
+      }
+    });
+
+    function updateCharts(hr, temp) {
+      const now = new Date().toLocaleTimeString();
+      if (heartData.length > 10) { heartData.shift(); heartChart.data.labels.shift(); }
+      heartData.push(hr); heartChart.data.labels.push(now); heartChart.update();
+
+      if (tempData.length > 10) { tempData.shift(); tempChart.data.labels.shift(); }
+      tempData.push(temp); tempChart.data.labels.push(now); tempChart.update();
+    }
+
+    setInterval(fetchData, 3000);
+  </script>
+</body>
+</html>
