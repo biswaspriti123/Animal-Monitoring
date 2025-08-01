@@ -5,39 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Animal Monitoring Dashboard</title>
 
-  <!-- Stylesheets -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet/dist/leaflet.css" />
+  <!-- Fonts & Styles -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet/dist/leaflet.css" />
 
   <style>
     :root {
-      --primary: #865439;
-      --secondary: #f8f5f1;
-      --card-bg: #ffffff;
-      --text-dark: #212121;
-      --text-light: #666;
-      --radius: 12px;
-      --shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      --primary: #a9733c;
+      --background: #f8f5f1;
+      --card: #ffffff;
+      --text-dark: #333;
+      --text-light: #777;
+      --border-radius: 12px;
     }
 
     * {
+      margin: 0; padding: 0;
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
     }
 
     body {
       font-family: 'Inter', sans-serif;
       display: flex;
       height: 100vh;
-      background: var(--secondary);
-      color: var(--text-dark);
+      background: var(--background);
       overflow: hidden;
     }
 
     .sidebar {
-      width: 260px;
-      background-color: var(--primary);
+      width: 240px;
+      background: var(--primary);
       color: white;
       padding: 30px 20px;
       display: flex;
@@ -45,33 +42,32 @@
     }
 
     .sidebar img {
-      width: 60px;
+      width: 70px;
       margin: 0 auto 20px;
     }
 
     .sidebar h1 {
-      font-size: 22px;
+      font-size: 20px;
       text-align: center;
-      margin-bottom: 40px;
-      font-weight: 600;
+      margin-bottom: 30px;
     }
 
     .nav-item {
-      padding: 12px 16px;
-      margin-bottom: 12px;
-      border-radius: var(--radius);
-      font-weight: 500;
+      margin-bottom: 18px;
+      font-weight: 600;
       cursor: pointer;
+      padding: 10px;
+      border-radius: 8px;
       transition: background 0.3s;
     }
 
     .nav-item:hover {
-      background: rgba(255, 255, 255, 0.1);
+      background-color: rgba(255, 255, 255, 0.15);
     }
 
     .main {
       flex: 1;
-      padding: 30px;
+      padding: 20px 30px;
       overflow-y: auto;
     }
 
@@ -80,59 +76,45 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 30px;
-      flex-wrap: wrap;
-      gap: 10px;
     }
 
     .topbar input {
-      padding: 10px 16px;
-      border: 1px solid #ccc;
-      border-radius: var(--radius);
-      width: 260px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: var(--border-radius);
       outline: none;
-      font-size: 14px;
+      width: 250px;
     }
 
-    .user {
+    .topbar .user {
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
-    .user img {
-      width: 36px;
-      height: 36px;
+    .topbar .user img {
+      width: 35px;
+      height: 35px;
       border-radius: 50%;
     }
 
     .cards {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 20px;
       margin-bottom: 30px;
     }
 
     .card {
-      background: var(--card-bg);
-      border-radius: var(--radius);
+      background: var(--card);
+      border-radius: var(--border-radius);
       padding: 20px;
-      box-shadow: var(--shadow);
-      transition: transform 0.2s;
-      text-align: center;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-    }
-
-    .card img {
-      width: 40px;
-      margin-bottom: 10px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.08);
     }
 
     .card h3 {
-      font-size: 18px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      color: var(--text-dark);
     }
 
     .card p {
@@ -141,16 +123,11 @@
     }
 
     .section-feature {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 24px;
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      padding: 20px;
       margin-bottom: 30px;
-    }
-
-    .section-feature h2 {
-      font-size: 20px;
-      margin-bottom: 20px;
     }
 
     .charts {
@@ -161,56 +138,21 @@
 
     .charts > div {
       flex: 1;
-      min-width: 320px;
-      height: 300px;
+      min-width: 300px;
     }
 
     #map {
-      height: 320px;
-      border-radius: var(--radius);
+      height: 300px;
+      border-radius: var(--border-radius);
       margin-bottom: 30px;
-    }
-
-    ul.alerts {
-      list-style: none;
-      padding-left: 0;
-      font-size: 14px;
-      color: #c0392b;
-    }
-
-    #clock {
-      font-weight: 500;
-      font-size: 14px;
-    }
-
-    @media (max-width: 768px) {
-      body {
-        flex-direction: column;
-      }
-
-      .sidebar {
-        width: 100%;
-        flex-direction: row;
-        overflow-x: auto;
-      }
-
-      .main {
-        padding: 20px;
-      }
-
-      .topbar {
-        flex-direction: column;
-        align-items: flex-start;
-      }
     }
   </style>
 </head>
-
 <body>
 
   <!-- Sidebar -->
   <div class="sidebar">
-    <img src="https://img.icons8.com/ios-filled/100/cow.png" alt="Animal Logo">
+    <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Logo">
     <h1>SKIIAST</h1>
     <div class="nav-item">Dashboard</div>
     <div class="nav-item">Live Location</div>
@@ -221,150 +163,80 @@
     <div class="nav-item">Logout</div>
   </div>
 
-  <!-- Main Content -->
+  <!-- Main -->
   <div class="main">
     <div class="topbar">
       <input type="text" placeholder="Search animal...">
       <div class="user">
         <span>Priti</span>
-        <img src="https://img.icons8.com/ios-glyphs/30/user.png" alt="User Avatar">
+        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="User">
       </div>
-      <span id="clock"></span>
     </div>
 
     <!-- Health Cards -->
     <div class="cards">
-      <div class="card">
-        <img src="https://img.icons8.com/ios-filled/50/cow.png" alt="Cow Icon">
-        <h3>Temperature</h3>
-        <p>38.5°C – Normal</p>
-      </div>
-      <div class="card">
-        <img src="https://img.icons8.com/ios-filled/50/cow.png" alt="Cow Icon">
-        <h3>Heart Rate</h3>
-        <p>72 bpm – Normal</p>
-      </div>
-      <div class="card">
-        <img src="https://img.icons8.com/ios-filled/50/cow.png" alt="Cow Icon">
-        <h3>Steps Count</h3>
-        <p>1,200 steps today</p>
-      </div>
-      <div class="card">
-        <img src="https://img.icons8.com/ios-filled/50/cow.png" alt="Cow Icon">
-        <h3>Heat Alert</h3>
-        <p>No alerts</p>
-      </div>
+      <div class="card"><h3>Temperature</h3><p>38.5°C - Normal</p></div>
+      <div class="card"><h3>Heart Rate</h3><p>72 bpm - Normal</p></div>
+      <div class="card"><h3>Steps Count</h3><p>1,200 steps today</p></div>
+      <div class="card"><h3>Heat Alert</h3><p>No alerts</p></div>
     </div>
 
-    <!-- Animal Profiles -->
-    <div class="section-feature">
-      <h2>Animal Profiles</h2>
-      <div class="cards">
-        <div class="card">
-          <img src="https://img.icons8.com/ios-filled/50/cow.png" alt="Cow">
-          <h3>Cow #101</h3>
-          <p>Breed: Gir<br>Age: 4 years<br>Health: Good</p>
-        </div>
-        <div class="card">
-          <img src="https://img.icons8.com/ios-filled/50/cow.png" alt="Cow">
-          <h3>Cow #102</h3>
-          <p>Breed: Sahiwal<br>Age: 3.5 years<br>Health: Normal</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Map Section -->
+    <!-- Map -->
     <div id="map"></div>
 
-    <!-- Alerts -->
-    <div class="section-feature">
-      <h2>Health Alerts</h2>
-      <ul class="alerts">
-        <li>⚠️ Cow #105: High temperature (39.8°C)</li>
-        <li>⚠️ Cow #109: Low heart rate detected (48 bpm)</li>
-        <li>✅ All other cows stable</li>
-      </ul>
-    </div>
-
-    <!-- Step Count Chart -->
-    <div class="section-feature">
-      <h2>Daily Step Count</h2>
-      <canvas id="stepsChart"></canvas>
-    </div>
-
-    <!-- Milk Report Charts -->
+    <!-- Charts Section -->
     <div class="section-feature">
       <h2>Milk Yield Report</h2>
       <div class="charts">
-        <div id="piechart_div">Loading pie chart...</div>
-        <div id="barchart_div">Loading bar chart...</div>
+        <div id="piechart_div"></div>
+        <div id="barchart_div"></div>
       </div>
     </div>
   </div>
 
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/leaflet/dist/leaflet.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <!-- Scripts (Deferred for performance) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/leaflet/dist/leaflet.js"></script>
+  <script defer src="https://www.gstatic.com/charts/loader.js"></script>
 
   <script>
-    // Map with cow icon
-    const cowIcon = L.icon({
-      iconUrl: 'https://img.icons8.com/ios-filled/50/cow.png',
-      iconSize: [32, 32],
-      iconAnchor: [16, 32],
-      popupAnchor: [0, -32]
+    window.addEventListener('load', () => {
+      // Load and render map
+      const map = L.map('map').setView([22.57, 88.36], 13);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap'
+      }).addTo(map);
+      L.marker([22.57, 88.36]).addTo(map)
+        .bindPopup('Cow #1 Location')
+        .openPopup();
+
+      // Load Google Charts
+      google.charts.load('current', {packages: ['corechart']});
+      google.charts.setOnLoadCallback(drawCharts);
+
+      function drawCharts() {
+        const data = google.visualization.arrayToDataTable([
+          ['Breed', 'Milk Yield (kg)'],
+          ['Ongole', 3100],
+          ['Gir', 2110],
+          ['Rathi', 1560],
+          ['Red Sindhi', 1840],
+          ['Sahiwal', 2325]
+        ]);
+
+        const piechart = new google.visualization.PieChart(document.getElementById('piechart_div'));
+        piechart.draw(data, {
+          title: 'Milk Yield Per Lactation (Pie)',
+          width: 400, height: 300
+        });
+
+        const barchart = new google.visualization.BarChart(document.getElementById('barchart_div'));
+        barchart.draw(data, {
+          title: 'Milk Yield Per Lactation (Bar)',
+          width: 400, height: 300,
+          legend: 'none'
+        });
+      }
     });
-
-    const map = L.map('map').setView([22.57, 88.36], 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap'
-    }).addTo(map);
-
-    L.marker([22.57, 88.36], { icon: cowIcon })
-      .addTo(map)
-      .bindPopup('Cow #1 Location')
-      .openPopup();
-
-    // Google Milk Charts
-    google.charts.load('current', { packages: ['corechart'] });
-    google.charts.setOnLoadCallback(drawCharts);
-
-    function drawCharts() {
-      const data = google.visualization.arrayToDataTable([
-        ['Breed', 'Milk Yield (kg)'],
-        ['Ongole', 3100],
-        ['Gir', 2110],
-        ['Rathi', 1560],
-        ['Red Sindhi', 1840],
-        ['Sahiwal', 2325]
-      ]);
-
-      new google.visualization.PieChart(document.getElementById('piechart_div')).draw(data, {
-        title: 'Milk Yield per Lactation – Pie',
-        width: '100%',
-        height: 300
-      });
-
-      new google.visualization.BarChart(document.getElementById('barchart_div')).draw(data, {
-        title: 'Milk Yield per Lactation – Bar',
-        width: '100%',
-        height: 300,
-        legend: 'none'
-      });
-    }
-
-    // Live Clock
-    function updateClock() {
-      const now = new Date();
-      document.getElementById('clock').innerText = now.toLocaleTimeString();
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
-
-    // Step Count Chart
-    const ctx = document.getElementById('stepsChart').getContext('2d');
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ['Mon', 'Tue', 'Wed', 'Thu',]()
+  </script>
+</body>
+</html>
