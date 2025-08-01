@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Animal Monitoring System</title>
+
+    <link rel="stylesheet" href="Vendors/CSS/normalize.css">
+    <link rel="stylesheet" href="Vendors/CSS/038 Grid.css">
+    <link rel="stylesheet" href="Resources/CSS/style.css">
+    <link rel="stylesheet" href="Resources/CSS/queries.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
+
+    <!-- Google Charts Loader -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages': ['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Milk Yield in kg');
+            data.addColumn('number', 'Milk Yield in kg');
+            data.addRows([
+                ['Ongole', 3100],
+                ['Gir', 2110],
+                ['Rathi', 1560],
+                ['Red Sindhi', 1840],
+                ['Sahiwal', 2325]
+            ]);
+
+            var piechart = new google.visualization.PieChart(document.getElementById('piechart_div'));
+            piechart.draw(data, {
+                title: 'Piechart - Cow Milk Yield Per Lactation (kg)',
+                width: 600,
+                height: 400
+            });
+
+            var barchart = new google.visualization.BarChart(document.getElementById('barchart_div'));
+            barchart.draw(data, {
+                title: 'Barchart - Cow Milk Yield Per Lactation (kg)',
+                width: 600,
+                height: 400,
+                legend: 'none'
+            });
+        }
+    </script>
+</head>
+
+<body>
+
+    <header>
+        <div class="hero-text-box">
+            <h1>Animal Monitoring System</h1>
+            <a class="btn btn-full" href="homepage.html">Get Started</a>
+        </div>
+    </header>
+
+    <section class="section-feature">
+        <div class="row">
+            <h2>Animal Monitoring System</h2>
+
+            <table class="table">
+                <tr>
+                    <td><div id="piechart_div"></div></td>
+                    <td><div id="barchart_div"></div></td>
+                </tr>
+            </table>
+
+            <div class="row">
+                <div class="col span-1-of-3 box">
+                    <ion-icon class="icon_big" name="pin"></ion-icon>
+                    <h3>Tracking Animals</h3>
+                    <p>The Animal Monitoring System is a prototype device designed to track the location and monitor the health of animals, measuring parameters such as body temperature and humidity.</p>
+                </div>
+
+                <div class="col span-1-of-3 box">
+                    <ion-icon class="icon_big" name="cash"></ion-icon>
+                    <h3>Cost-Efficient</h3>
+                    <p>This system offers a cost-effective solution to help small-scale farmers avoid expensive commercial monitoring systems.</p>
+                </div>
+
+                <div class="col span-1-of-3 box">
+                    <ion-icon class="icon_big" name="construct"></ion-icon>
+                    <h3>IOT Project</h3>
+                    <p>This is an IoT project using modules like GPS (Neo6m), Temperature and Humidity Sensor (DHT11), and Wi-Fi Module (ESP8266) to transmit animal data directly to the user’s device.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
+    <script src="Resources/JavaScript/script.js"></script>
+</body>
+</html>
