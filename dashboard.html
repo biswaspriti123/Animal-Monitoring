@@ -116,7 +116,6 @@
     }
   </style>
 </head>
-
 <body>
   <div class="container">
     <div class="top-bar">
@@ -205,7 +204,6 @@
     </div>
   </div>
 
-  <!-- Animal Modal -->
   <div id="animalModal" class="modal">
     <div class="modal-content">
       <h3>Animal Details</h3>
@@ -220,7 +218,6 @@
   <script src="https://cdn.jsdelivr.net/npm/leaflet/dist/leaflet.js"></script>
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script>
-    // Google Charts
     google.charts.load('current', {'packages':['corechart']});
     google.charts.setOnLoadCallback(drawCharts);
 
@@ -257,27 +254,22 @@
         .draw(behaviorData, { title: 'Daily Behavior Metrics', bars: 'vertical', legend: { position: 'bottom' } });
     }
 
-    // Leaflet Map
     const map = L.map('map').setView([10.5276, 76.2144], 8);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap'
     }).addTo(map);
     L.marker([10.5276, 76.2144]).addTo(map).bindPopup("Cow #101").openPopup();
 
-    // Dark mode toggle
-    const toggleBtn = document.getElementById("toggleDark");
-    toggleBtn.addEventListener("click", () => {
+    document.getElementById("toggleDark").addEventListener("click", () => {
       document.body.classList.toggle("dark-mode");
       localStorage.setItem("theme", document.body.classList.contains("dark-mode") ? "dark" : "light");
     });
     if (localStorage.getItem("theme") === "dark") document.body.classList.add("dark-mode");
 
-    // Cow selector
     document.getElementById("cowSelect").addEventListener("change", (e) => {
       if (e.target.value) alert(`Selected Cow: ${e.target.value}`);
     });
 
-    // Export button
     document.getElementById("exportBtn").addEventListener("click", () => {
       const data = "Time,Temperature,HeartRate,Breathing\n10AM,38.5,80,25\n11AM,38.6,82,26\n12PM,38.9,85,27";
       const blob = new Blob([data], { type: "text/csv" });
@@ -287,12 +279,10 @@
       link.click();
     });
 
-    // Modal on card click
     document.getElementById("healthCard").addEventListener("click", () => {
       document.getElementById("animalModal").style.display = "flex";
     });
 
-    // Dynamic alerts (optional enhancement)
     const alerts = [
       '🚨 New Fever Detected in Cow #51',
       '🧪 Vaccine Schedule Due for Cow #18',
