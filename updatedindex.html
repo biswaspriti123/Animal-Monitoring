@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Animal Monitoring Dashboard</title>
+
+  <!-- Styles & Fonts -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet/dist/leaflet.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css' rel='stylesheet' />
+  <style>
+    :root {
+      --primary: #a9733c;
+      --background: #f8f5f1;
+      --card: #ffffff;
+      --text-dark: #333;
+      --text-light: #777;
+      --border-radius: 12px;
+    }
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      height: 100vh;
+      background: var(--background);
+      overflow: hidden;
+      transition: background 0.3s, color 0.3s;
+    }
+    .dark-mode {
+      --background: #1e1e1e;
+      --card: #2c2c2c;
+      --text-dark: #f5f5f5;
+      --text-light: #bbb;
+    }
+    .sidebar {
+      width: 260px;
+      background: var(--primary);
+      color: white;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar img {
+      width: 70px;
+      margin: 0 auto 20px;
+    }
+    .sidebar h1 {
+      font-size: 20px;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .nav-item {
+      margin-bottom: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 10px;
+      border-radius: 8px;
+      transition: background 0.3s;
+    }
+    .nav-item:hover, .nav-item.active {
+      background-color: rgba(255, 255, 255, 0.25);
+    }
+    .main {
+      flex: 1;
+      padding: 20px 30px;
+      overflow-y: auto;
+      color: var(--text-dark);
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    .topbar input {
+      padding: 10px 15px;
+      border: none;
+      border-radius: var(--border-radius);
+      outline: none;
+      width: 250px;
+    }
+    .topbar .user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .card {
+      background: var(--card);
+      border-radius: var(--border-radius);
+      padding: 20px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    }
+    .section {
+      margin-bottom: 30px;
+    }
+    #map {
+      height: 300px;
+      border-radius: var(--border-radius);
+      margin-bottom: 20px;
+    }
+    .charts, .notifications {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .charts > div, .notifications > div {
+      flex: 1;
+      min-width: 300px;
+      background: var(--card);
+      border-radius: var(--border-radius);
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    .dark-toggle {
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--text-light);
+    }
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 400px;
+    }
+    .modal h3 {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <img src="https://cdn-icons-png.flaticon.com/512/1998/1998610.png" alt="Cow Logo">
+    <h1>SKIIAST</h1>
+    <div class="nav-item active">Dashboard</div>
+    <div class="nav-item">Animal Profiles</div>
+    <div class="nav-item">Live Location</div>
+    <div class="nav-item">Health Monitoring</div>
+    <div class="nav-item">Milk Reports</div>
+    <div class="nav-item">Notifications</div>
+    <div class="nav-item">Settings</div>
+    <div class="nav-item">Export</div>
+    <div class="nav-item">Logout</div>
+    <div class="dark-toggle" onclick="toggleDarkMode()">Toggle Dark Mode</div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <input type="text" placeholder="Search animal...">
+      <div class="user">
+        <span>Priti</span>
+        <img src="https://img.icons8.com/ios-glyphs/30/user.png" alt="User">
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card" onclick="openModal()"><h3>Temperature</h3><p>38.5°C - Normal</p></div>
+      <div class="card"><h3>Heart Rate</h3><p>72 bpm - Normal</p></div>
+      <div class="card"><h3>Steps Count</h3><p>1,200 steps today</p></div>
+      <div class="card"><h3>Heat Alert</h3><p>No alerts</p></div>
+    </div>
+
+    <div id="map"></div>
+
+    <div class="section">
+      <h2>Milk Yield Analytics</h2>
+      <div class="charts">
+        <div id="piechart_div"></div>
+        <div id="barchart_div"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Alerts & Notifications</h2>
+      <div class="notifications" id="alerts"></div>
+    </div>
+
+    <div class="section">
+      <h2>Upcoming Events</h2>
+      <div id='calendar'></div>
+    </div>
+
+    <div class="section">
+      <h2>Export Data</h2>
+      <button onclick="window.print()">Export as PDF</button>
+      <button onclick="alert('CSV export coming soon!')">Export as CSV</button>
+    </div>
+  </div>
+
+  <div class="modal" id="animalModal">
+    <div class="modal-content">
+      <h3>Animal Profile</h3>
+      <p><strong>ID:</strong> Cow #1</p>
+      <p><strong>Breed:</strong> Sahiwal</p>
+      <p><strong>Age:</strong> 4 years</p>
+      <p><strong>Health:</strong> Normal</p>
+      <button onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/leaflet/dist/leaflet.js"></script>
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
+  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js'></script>
+  <script>
+    const map = L.map('map').setView([22.57, 88.36], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+    L.marker([22.57, 88.36]).addTo(map)
+      .bindPopup('Cow #1 Location')
+      .openPopup();
+
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawCharts);
+    function drawCharts() {
+      const data = google.visualization.arrayToDataTable([
+        ['Breed', 'Milk Yield (kg)'],
+        ['Ongole', 3100],
+        ['Gir', 2110],
+        ['Rathi', 1560],
+        ['Red Sindhi', 1840],
+        ['Sahiwal', 2325]
+      ]);
+      new google.visualization.PieChart(document.getElementById('piechart_div')).draw(data, {
+        title: 'Milk Yield Per Lactation (Pie)', width: 400, height: 300
+      });
+      new google.visualization.BarChart(document.getElementById('barchart_div')).draw(data, {
+        title: 'Milk Yield Per Lactation (Bar)', width: 400, height: 300, legend: 'none'
+      });
+    }
+
+    const alertContainer = document.getElementById('alerts');
+    function addAlert(msg) {
+      const div = document.createElement('div');
+      div.innerHTML = msg + '<br><small>' + new Date().toLocaleTimeString() + '</small>';
+      alertContainer.prepend(div);
+    }
+    setInterval(() => {
+      if (Math.random() > 0.5) addAlert('<strong>Cow #' + Math.floor(Math.random()*20+1) + ':</strong> Low activity');
+    }, 7000);
+
+    function openModal() {
+      document.getElementById('animalModal').style.display = 'flex';
+    }
+    function closeModal() {
+      document.getElementById('animalModal').style.display = 'none';
+    }
+
+    const calendarEl = document.getElementById('calendar');
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      events: [
+        { title: 'Vet visit Cow #5', start: '2025-08-03' },
+        { title: 'Vaccination Cow #10', start: '2025-08-05' },
+        { title: 'Heat cycle Cow #7', start: '2025-08-06' }
+      ]
+    });
+    calendar.render();
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+    }
+  </script>
+</body>
+</html>
