@@ -1,1 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Animal Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    #map { height: 300px; margin-bottom: 20px; }
+    canvas { max-width: 600px; margin-bottom: 30px; }
+    .panel {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    .card {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 12px;
+      background: #f9f9f9;
+    }
+    .card h3 {
+      margin-top: 0;
+      font-size: 16px;
+      color: #333;
+    }
+    .value {
+      font-size: 24px;
+      color: #007BFF;
+    }
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+  <h1>Animal Monitoring Dashboard</h1>
+
+  <!-- Sensor Panel -->
+  <div class="panel">
+    <div class="card"><h3>Body Temperature</h3><div id="cow1_temperature" class="value">-- °C</div></div>
+    <div class="card"><h3>Heart Rate</h3><div id="cow1_heartRate" class="value">-- bpm</div></div>
+    <div class="card"><h3>Humidity</h3><div id="cow1_humidity" class="value">-- %</div></div>
+    <div class="card"><h3>Motion</h3><div id="cow1_motion" class="value">--</div></div>
+    <div class="card"><h3>Fall Detection</h3><div id="cow1_fallDetected" class="value">--</div></div>
+    <div class="card"><h3>GPS Location</h3><div id="cow1_location" class="value">--</div></div>
+  </div>
+
+  <!-- Map -->
+  <div id="map"></div>
+
+  <!-- Charts -->
+  <canvas id="heartChart"></canvas>
+  <canvas id="tempChart"></canvas>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const map = L.map('map').setView([10.5, 76.5], 10);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    let marker = null;
+
+    let heartData = [];
+    let tempData = [];
+
+    const heartChart = new Chart(document.getElementById('heartChart'), {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{ label: 'Heart Rate', data: heartData, borderColor: 'red', fill: false }]
+      },
+      options: {
+        responsive: true,
+        animation: false,
+        scales: {
+          y: { beginAtZero: true },
+          x: { title: { display: true, text: 'Time' }}
+        }
+      }
+    });
+
+    const tempChart = new Chart(document.getElementById('tempChart'), {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{ label: 'Temperature', data: tempData, borderColor: 'blue', fill: false }]
+      },
+      options: {
+        responsive: true,
+        animation: false,
+        scales: {
+          y: { beginAtZero: true },
+          x: { title: { display: true, text: 'Time' }}
+        }
+      }
+    });
+
+    function updateCharts(hr, temp) {
+      const now = new Date().toLocaleTimeString();
+      if (heartData.length > 10) { heartData.shift(); heartChart.data.labels.shift(); }
+      heartData.push(hr); heartChart.data.labels.push(now); heartChart.update();
+
+      if (tempData.length > 10) { tempData.shift(); tempChart.data.labels.shift(); }
+      tempData.push(temp); tempChart.data.labels.push(now); tempChart.update();
+    }
+
+    function updatePanel(data) {
+      document.getElementById('cow1_temperature').innerText = `${data.temperature} °C`;
+      document.getElementById('cow1_heartRate').innerText = `${data.heart_rate} bpm`;
+      document.getElementById('cow1_humidity').innerText = `${data.humidity} %`;
+      document.getElementById('cow1_motion').innerText = data.motion ? 'Active' : 'Inactive';
+      document.getElementById('cow1_fallDetected').innerText = data.fallDetected ? 'Yes' : 'No';
+      document.getElementById('cow1_location').innerText = `${data.location[0].toFixed(4)}, ${data.location[1].toFixed(4)}`;
+    }
+
+    async function fetchData() {
+      try {
+        const res = await fetch('https://animal-api-url/animals'); // Replace with actual API
+        if (!res.ok) throw new Error('Failed to fetch data');
+        const data = await res.json();
+        const cow = data["cow1"];
+        if (!cow) return;
+
+        const [lat, lon] = cow.location;
+        if (marker) {
+          marker.setLatLng([lat, lon]);
+        } else {
+          marker = L.marker([lat, lon]).addTo(map);
+        }
+
+        updatePanel(cow);
+        updateCharts(cow.heart_rate, cow.temperature);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      }
+    }
+
+    setInterval(fetchData, 3000);
+  </script>
+</body>
+</html>
 
