@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Vendors/CSS/normalize.css">
+    <link rel="stylesheet" href="Vendors/CSS/038%20Grid.css">
+    <link rel="stylesheet" href="Resources/CSS/style_h.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <title>Animal Monitoring System</title>
+
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        h3,
+        h2 {
+            color: #2c3e50;
+            margin: 10px 0;
+        }
+
+        .section-breeds {
+            margin: 20px auto;
+            max-width: 1200px;
+        }
+
+        /* Flexbox Layout for Breed Selection */
+        .section-photo {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .cow-photo {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .cow-photo img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .cow-photo:hover {
+            transform: scale(1.05);
+        }
+
+        /* Breed Selection */
+        .Check {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .col {
+            margin-bottom: 15px;
+        }
+
+        .col span-1-of-5 {
+            display: inline-block;
+            width: 18%;
+            margin-right: 2%;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.5);
+        }
+
+        label {
+            font-size: 18px;
+            font-weight: 500;
+            color: #34495e;
+            cursor: pointer;
+        }
+
+        label:hover {
+            color: #3498db;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="button"] {
+            padding: 12px 20px;
+            background-color: #3498db;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="button"]:hover {
+            background-color: #2980b9;
+        }
+
+        .Breed-selection {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 14px;
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Animal Monitoring System</h1>
+    </header>
+
+    <section class="section-breeds">
+        <section class="section-photo">
+            <ul class="Breed-selection">
+                <li>
+                    <figure class="cow-photo">
+                        <img src="Resources/Image/1.jpg" alt="Kangayam">
+                    </figure>
+                </li>
+                <li>
+                    <figure class="cow-photo">
+                        <img src="Resources/Image/2.jpg" alt="Kankrej">
+                    </figure>
+                </li>
+                <li>
+                    <figure class="cow-photo">
+                        <img src="Resources/Image/3.jpg" alt="Kenkathal">
+                    </figure>
+                </li>
+                <li>
+                    <figure class="cow-photo">
+                        <img src="Resources/Image/4.jpg" alt="Kherigarh">
+                    </figure>
+                </li>
+                <li>
+                    <figure class="cow-photo">
+                        <img src="Resources/Image/5.jpg" alt="Rathi">
+                    </figure>
+                </li>
+            </ul>
+        </section>
+
+        <h3>Select Breed</h3>
+
+        <div class="Check">
+            <form id="cow-form">
+                <div class="col">
+                    <input type="checkbox" id="breed1">
+                    <label for="breed1">Ongole</label>
+                </div>
+                <div class="col">
+                    <input type="checkbox" id="breed2">
+                    <label for="breed2">Gir</label>
+                </div>
+                <div class="col">
+                    <input type="checkbox" id="breed3">
+                    <label for="breed3">Rathi</label>
+                </div>
+                <div class="col">
+                    <input type="checkbox" id="breed4">
+                    <label for="breed4">Red Sindhi</label>
+                </div>
+                <div class="col">
+                    <input type="checkbox" id="breed5">
+                    <label for="breed5">Sahiwal</label>
+                </div>
+
+                <h2>Cow's Information</h2>
+                <input type="text" id="cname" name="cowname" placeholder="Name of the Cow (Nickname)" required>
+                <input type="number" id="age" name="cowage" placeholder="Age of the cow (in months)" required>
+                <br>
+                <input type="number" id="lgb" name="lastgivwb" placeholder="When did the cow last give birth (in months)" required>
+                <input type="button" onClick="CowInfo()" value="SUBMIT">
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 Animal Monitoring System. All rights reserved.</p>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-database.js"></script>
+
+    <script>
+        // Your Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyBeeWcGeSlkQEcjKOFpPnVzn6bbYFsOXyc",
+            authDomain: "livestock-monitoring-system.firebaseapp.com",
+            databaseURL: "https://livestock-monitoring-system.firebaseio.com",
+            projectId: "livestock-monitoring-system",
+            storageBucket: "livestock-monitoring-system.appspot.com",
+            messagingSenderId: "31103750254",
+            appId: "1:31103750254:web:e12b16e888c308cef1567f",
+            measurementId: "G-3E7V8NDEWF"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        function CowInfo() {
+            let cowName = document.getElementById('cname').value;
+            let age = document.getElementById('age').value;
+            let lgb = document.getElementById('lgb').value;
+
+            if (!cowName || !age || !lgb) {
+                alert('Please fill out all fields!');
+                return;
+            }
+
+            // Push to Firebase
+            firebase.database().ref('CowInfo').push({
+                age: parseInt(age),
+                cowName: cowName,
+                lgb: parseInt(lgb)
+            });
+
+            // Redirect based on breed selection
+            if (document.getElementById('breed1').checked) window.location.href = "./Breed_1_Page.html";
+            if (document.getElementById('breed2').checked) window.location.href = "./Breed_2_Page.html";
+            if (document.getElementById('breed3').checked) window.location.href = "./Breed_3_Page.html";
+            if (document.getElementById('breed4').checked) window.location.h
