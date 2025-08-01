@@ -13,6 +13,11 @@
       background-color: #f4f4f9;
       margin: 0;
       padding: 0;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    body.dark-mode {
+      background-color: #1e1e2f;
+      color: #f1f1f1;
     }
     .container {
       max-width: 1200px;
@@ -23,13 +28,19 @@
       text-align: center;
       color: #333;
     }
+    body.dark-mode h1, body.dark-mode h2 {
+      color: #f1f1f1;
+    }
     .card {
       background: white;
       padding: 1rem;
       margin: 1rem 0;
       border-radius: 10px;
       box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-      cursor: pointer;
+    }
+    body.dark-mode .card {
+      background: #2e2e3e;
+      color: white;
     }
     .cards {
       display: flex;
@@ -59,75 +70,74 @@
     table th {
       background-color: #f2f2f2;
     }
-
-    /* Dark Mode */
-    .dark-mode {
-      background-color: #1e1e1e;
-      color: #eee;
+    .dark-mode table th {
+      background-color: #444;
+      color: #fff;
     }
-    .dark-mode .card {
-      background-color: #2c2c2c;
-      color: #f5f5f5;
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
     }
-    .dark-toggle {
-      text-align: right;
-      margin-bottom: 1rem;
-      cursor: pointer;
-      font-size: 14px;
-      color: #555;
-    }
-
-    /* Modal */
     .modal {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.5);
       display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.6);
       justify-content: center;
       align-items: center;
-      z-index: 1000;
     }
     .modal-content {
       background: white;
-      padding: 20px;
+      padding: 2rem;
       border-radius: 10px;
-      width: 400px;
+      max-width: 400px;
+      width: 90%;
     }
-    .modal h3 {
-      margin-top: 0;
-    }
-
-    /* CSV button */
-    .export-btn {
-      display: block;
-      margin: 1rem auto;
-      padding: 0.5rem 1rem;
-      background-color: #a9733c;
+    .dark-mode .modal-content {
+      background: #333;
       color: white;
+    }
+    button {
+      padding: 8px 12px;
+      margin: 0.5rem 0.5rem 0;
+      border-radius: 6px;
       border: none;
-      border-radius: 8px;
+      background-color: #007bff;
+      color: white;
       cursor: pointer;
+    }
+    select {
+      padding: 8px;
+      border-radius: 6px;
     }
   </style>
 </head>
 
 <body>
   <div class="container">
-    <div class="dark-toggle" onclick="toggleDarkMode()">🌙 Toggle Dark Mode</div>
-    <h1>Animal Monitoring Dashboard</h1>
-
-    <div style="text-align: center; margin: 1rem 0;">
-      <select id="cowSelector" onchange="onCowSelect(this.value)">
-        <option value="101">Cow #101</option>
-        <option value="102">Cow #102</option>
-        <option value="103">Cow #103</option>
-      </select>
+    <div class="top-bar">
+      <button id="toggleDark">🌙 Toggle Dark Mode</button>
+      <div>
+        <label for="cowSelect">Select Cow:</label>
+        <select id="cowSelect">
+          <option value="">-- Select --</option>
+          <option value="101">Cow #101</option>
+          <option value="102">Cow #102</option>
+          <option value="103">Cow #103</option>
+        </select>
+      </div>
+      <button id="exportBtn">📤 Export Health Data</button>
     </div>
+
+    <h1>Animal Monitoring Dashboard</h1>
 
     <div class="section">
       <h2>Health Trend</h2>
-      <div class="card" onclick="openModal()">
+      <div class="card" id="healthCard">
         <div id="healthChart" style="height: 400px;"></div>
       </div>
     </div>
@@ -148,7 +158,7 @@
 
     <div class="section">
       <h2>Alert System</h2>
-      <div class="card" id="alerts">
+      <div class="card" id="alertCard">
         <p>🛎️ <strong>Critical:</strong> Cow #23 has abnormal temperature</p>
         <p>🟡 <strong>Warning:</strong> Cow #42 slightly below feed threshold</p>
         <p>🟢 <strong>Info:</strong> Cow #17 vaccinated successfully</p>
@@ -184,12 +194,7 @@
       <h2>User Role Access</h2>
       <table>
         <thead>
-          <tr>
-            <th>Role</th>
-            <th>View</th>
-            <th>Edit</th>
-            <th>Export</th>
-          </tr>
+          <tr><th>Role</th><th>View</th><th>Edit</th><th>Export</th></tr>
         </thead>
         <tbody>
           <tr><td>Admin</td><td>✔️</td><td>✔️</td><td>✔️</td></tr>
@@ -198,26 +203,25 @@
         </tbody>
       </table>
     </div>
-
-    <button class="export-btn" onclick="exportToCSV()">Export Data as CSV</button>
   </div>
 
-  <div class="modal" id="animalModal">
+  <!-- Animal Modal -->
+  <div id="animalModal" class="modal">
     <div class="modal-content">
-      <h3>Animal Profile</h3>
+      <h3>Animal Details</h3>
       <p><strong>ID:</strong> Cow #101</p>
-      <p><strong>Breed:</strong> Sahiwal</p>
-      <p><strong>Age:</strong> 4 years</p>
-      <p><strong>Health:</strong> Normal</p>
-      <button onclick="closeModal()">Close</button>
+      <p><strong>Breed:</strong> Gir</p>
+      <p><strong>Age:</strong> 5 years</p>
+      <p><strong>Milk Yield:</strong> 18 liters/day</p>
+      <button onclick="document.getElementById('animalModal').style.display='none'">Close</button>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/leaflet/dist/leaflet.js"></script>
-  <script src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script>
     // Google Charts
-    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.load('current', {'packages':['corechart']});
     google.charts.setOnLoadCallback(drawCharts);
 
     function drawCharts() {
@@ -229,12 +233,8 @@
         ['1PM', 39.2, 90, 28],
         ['2PM', 38.7, 88, 27],
       ]);
-      const lineOptions = {
-        title: 'Health Trends',
-        curveType: 'function',
-        legend: { position: 'bottom' }
-      };
-      new google.visualization.LineChart(document.getElementById('healthChart')).draw(lineData, lineOptions);
+      new google.visualization.LineChart(document.getElementById('healthChart'))
+        .draw(lineData, { title: 'Health Trends', curveType: 'function', legend: { position: 'bottom' } });
 
       const pieData = google.visualization.arrayToDataTable([
         ['Status', 'Cows'],
@@ -242,8 +242,8 @@
         ['Warning', 5],
         ['Critical', 2]
       ]);
-      const pieOptions = { title: 'Health Status Distribution' };
-      new google.visualization.PieChart(document.getElementById('pieChart')).draw(pieData, pieOptions);
+      new google.visualization.PieChart(document.getElementById('pieChart'))
+        .draw(pieData, { title: 'Health Status Distribution' });
 
       const behaviorData = google.visualization.arrayToDataTable([
         ['Day', 'Steps', 'Chewing', 'Rest'],
@@ -253,12 +253,8 @@
         ['Thu', 1500, 6.1, 2.1],
         ['Fri', 1450, 6, 2]
       ]);
-      const behaviorOptions = {
-        title: 'Daily Behavior Metrics',
-        bars: 'vertical',
-        legend: { position: 'bottom' }
-      };
-      new google.visualization.ColumnChart(document.getElementById('behaviorChart')).draw(behaviorData, behaviorOptions);
+      new google.visualization.ColumnChart(document.getElementById('behaviorChart'))
+        .draw(behaviorData, { title: 'Daily Behavior Metrics', bars: 'vertical', legend: { position: 'bottom' } });
     }
 
     // Leaflet Map
@@ -266,55 +262,49 @@
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap'
     }).addTo(map);
-    const marker = L.marker([10.5276, 76.2144]).addTo(map).bindPopup("Cow #101").openPopup();
+    L.marker([10.5276, 76.2144]).addTo(map).bindPopup("Cow #101").openPopup();
 
-    // Dark Mode
-    function toggleDarkMode() {
-      document.body.classList.toggle('dark-mode');
-      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-    }
-    window.onload = () => {
-      if (localStorage.getItem('darkMode') === 'true') {
-        document.body.classList.add('dark-mode');
-      }
-    }
+    // Dark mode toggle
+    const toggleBtn = document.getElementById("toggleDark");
+    toggleBtn.addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
+      localStorage.setItem("theme", document.body.classList.contains("dark-mode") ? "dark" : "light");
+    });
+    if (localStorage.getItem("theme") === "dark") document.body.classList.add("dark-mode");
 
-    // Modal
-    function openModal() {
-      document.getElementById('animalModal').style.display = 'flex';
-    }
-    function closeModal() {
-      document.getElementById('animalModal').style.display = 'none';
-    }
+    // Cow selector
+    document.getElementById("cowSelect").addEventListener("change", (e) => {
+      if (e.target.value) alert(`Selected Cow: ${e.target.value}`);
+    });
 
-    // Cow Selector
-    function onCowSelect(id) {
-      alert("Selected Cow #" + id);
-    }
+    // Export button
+    document.getElementById("exportBtn").addEventListener("click", () => {
+      const data = "Time,Temperature,HeartRate,Breathing\n10AM,38.5,80,25\n11AM,38.6,82,26\n12PM,38.9,85,27";
+      const blob = new Blob([data], { type: "text/csv" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "health_data.csv";
+      link.click();
+    });
 
-    // Export CSV
-    function exportToCSV() {
-      const csv = 'Cow ID,Breed,Age,Health\n101,Sahiwal,4,Normal';
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'cow_data.csv';
-      a.click();
-    }
+    // Modal on card click
+    document.getElementById("healthCard").addEventListener("click", () => {
+      document.getElementById("animalModal").style.display = "flex";
+    });
 
-    // Dynamic Alert
-    function addAlert(msg) {
-      const div = document.createElement('p');
-      div.innerHTML = msg + ' <br><small>' + new Date().toLocaleTimeString() + '</small>';
-      document.getElementById('alerts').prepend(div);
-    }
+    // Dynamic alerts (optional enhancement)
+    const alerts = [
+      '🚨 New Fever Detected in Cow #51',
+      '🧪 Vaccine Schedule Due for Cow #18',
+      '🚚 Feed Refill Required'
+    ];
+    let alertIndex = 0;
     setInterval(() => {
-      if (Math.random() > 0.6) {
-        const id = Math.floor(Math.random() * 100 + 1);
-        addAlert(`<strong>Alert:</strong> Cow #${id} low activity 🟠`);
-      }
-    }, 7000);
+      const el = document.createElement("p");
+      el.textContent = alerts[alertIndex];
+      document.getElementById("alertCard").appendChild(el);
+      alertIndex = (alertIndex + 1) % alerts.length;
+    }, 8000);
   </script>
 </body>
 </html>
