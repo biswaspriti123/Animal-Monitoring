@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Animal Monitoring Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar/main.min.css" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 2rem;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #333;
+    }
+    .card {
+      background: white;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    .cards {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .cards .card {
+      flex: 1;
+      min-width: 200px;
+      text-align: center;
+    }
+    #map {
+      height: 400px;
+      border-radius: 10px;
+    }
+    .section {
+      margin-top: 2rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    table th, table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    table th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Animal Monitoring Dashboard</h1>
+
+    <div class="section">
+      <h2>Health Trend</h2>
+      <div class="card">
+        <div id="healthChart" style="height: 400px;"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Health Status Distribution</h2>
+      <div class="card">
+        <div id="pieChart" style="height: 400px;"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Behavior Analytics</h2>
+      <div class="card">
+        <div id="behaviorChart" style="height: 400px;"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Alert System</h2>
+      <div class="card">
+        <p>🛎️ <strong>Critical:</strong> Cow #23 has abnormal temperature</p>
+        <p>🟡 <strong>Warning:</strong> Cow #42 slightly below feed threshold</p>
+        <p>🟢 <strong>Info:</strong> Cow #17 vaccinated successfully</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Real-time Location</h2>
+      <div class="card">
+        <div id="map"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Genetic Lineage</h2>
+      <div class="card">
+        <p><strong>Father:</strong> Bull #A12 (Sahiwal)</p>
+        <p><strong>Mother:</strong> Cow #B34 (Sahiwal)</p>
+        <p><strong>Genetic Traits:</strong> High milk yield, heat tolerance</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Inventory Tracker</h2>
+      <div class="cards">
+        <div class="card"><h3>Feed Stock</h3><p>1,200 kg</p></div>
+        <div class="card"><h3>Vaccine Doses</h3><p>42 doses</p></div>
+        <div class="card"><h3>Ear Tags</h3><p>18 units</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>User Role Access</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Role</th>
+            <th>View</th>
+            <th>Edit</th>
+            <th>Export</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Admin</td><td>✔️</td><td>✔️</td><td>✔️</td></tr>
+          <tr><td>Veterinarian</td><td>✔️</td><td>✔️</td><td>❌</td></tr>
+          <tr><td>Staff</td><td>✔️</td><td>❌</td><td>❌</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/leaflet/dist/leaflet.js"></script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script>
+    // Google Charts
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawCharts);
+
+    function drawCharts() {
+      const lineData = google.visualization.arrayToDataTable([
+        ['Time', 'Temperature', 'Heart Rate', 'Breathing'],
+        ['10AM', 38.5, 80, 25],
+        ['11AM', 38.6, 82, 26],
+        ['12PM', 38.9, 85, 27],
+        ['1PM', 39.2, 90, 28],
+        ['2PM', 38.7, 88, 27],
+      ]);
+      const lineOptions = {
+        title: 'Health Trends',
+        curveType: 'function',
+        legend: { position: 'bottom' }
+      };
+      new google.visualization.LineChart(document.getElementById('healthChart')).draw(lineData, lineOptions);
+
+      const pieData = google.visualization.arrayToDataTable([
+        ['Status', 'Cows'],
+        ['Healthy', 20],
+        ['Warning', 5],
+        ['Critical', 2]
+      ]);
+      const pieOptions = {
+        title: 'Health Status Distribution'
+      };
+      new google.visualization.PieChart(document.getElementById('pieChart')).draw(pieData, pieOptions);
+
+      const behaviorData = google.visualization.arrayToDataTable([
+        ['Day', 'Steps', 'Chewing', 'Rest'],
+        ['Mon', 1200, 6, 2],
+        ['Tue', 1400, 5.5, 1.5],
+        ['Wed', 1350, 5.8, 1.8],
+        ['Thu', 1500, 6.1, 2.1],
+        ['Fri', 1450, 6, 2]
+      ]);
+      const behaviorOptions = {
+        title: 'Daily Behavior Metrics',
+        bars: 'vertical',
+        legend: { position: 'bottom' }
+      };
+      new google.visualization.ColumnChart(document.getElementById('behaviorChart')).draw(behaviorData, behaviorOptions);
+    }
+
+    // Leaflet Map
+    const map = L.map('map').setView([10.5276, 76.2144], 8);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap'
+    }).addTo(map);
+    L.marker([10.5276, 76.2144]).addTo(map).bindPopup("Cow #101").openPopup();
+  </script>
+</body>
+
+</html>
