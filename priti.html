@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Livestock Monitoring Dashboard</title>
+  <title>Animal Monitoring Dashboard</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet/dist/leaflet.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet/dist/leaflet.js"></script>
   <style>
     :root {
       --primary: #a9733c;
@@ -104,7 +106,7 @@
 
   <div class="main">
     <div class="topbar">
-      <h2>Livestock Monitoring Dashboard</h2>
+      <h2>Animal Monitoring Dashboard</h2>
       <div class="user">
         <input type="text" placeholder="Search..." style="padding: 6px 12px; border-radius: 6px; border: 1px solid #ccc;" />
         <img src="https://i.pravatar.cc/36" alt="User Avatar" />
@@ -164,8 +166,6 @@
     <footer>© 2025 Cow Smart Collar | SKIIAST Team</footer>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/leaflet/dist/leaflet.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     const map = L.map('map').setView([22.57, 88.36], 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -223,4 +223,3 @@
   </script>
 </body>
 </html>
-
