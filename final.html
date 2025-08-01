@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Animal Monitoring Dashboard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet/dist/leaflet.css" />
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+    header {
+      background-color: #2d3e50;
+      color: #fff;
+      padding: 1rem;
+      text-align: center;
+    }
+    section {
+      margin: 1rem;
+      padding: 1rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .chart-container, .map-container {
+      height: 400px;
+      width: 100%;
+    }
+    .alert {
+      padding: 1rem;
+      border-radius: 5px;
+      margin-bottom: 1rem;
+      color: white;
+    }
+    .alert-critical { background-color: #e74c3c; }
+    .alert-warning { background-color: #f39c12; }
+    .alert-info { background-color: #3498db; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      text-align: left;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Animal Monitoring Dashboard</h1>
+  </header>
+
+  <section>
+    <h2>📈 Health Trend Chart</h2>
+    <div id="health_chart" class="chart-container"></div>
+  </section>
+
+  <section>
+    <h2>📊 Health Status Pie Chart</h2>
+    <div id="status_pie_chart" class="chart-container"></div>
+  </section>
+
+  <section>
+    <h2>🐄 Behavior Analytics</h2>
+    <div id="behavior_chart" class="chart-container"></div>
+  </section>
+
+  <section>
+    <h2>🛎️ Alerts</h2>
+    <div class="alert alert-critical">Cow 102 has dangerously high temperature!</div>
+    <div class="alert alert-warning">Cow 108 is missing scheduled vaccination.</div>
+    <div class="alert alert-info">Daily check-in complete for herd A.</div>
+  </section>
+
+  <section>
+    <h2>🗺️ Real-Time Cow Location</h2>
+    <div id="map" class="map-container"></div>
+  </section>
+
+  <section>
+    <h2>🧬 Genetic Lineage</h2>
+    <table>
+      <thead>
+        <tr><th>Cow ID</th><th>Father</th><th>Mother</th><th>Breed</th><th>Traits</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>201</td><td>101</td><td>102</td><td>Holstein</td><td>High Milk Yield</td></tr>
+        <tr><td>202</td><td>103</td><td>104</td><td>Jersey</td><td>Heat Resistance</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>📦 Inventory Tracker</h2>
+    <table>
+      <thead>
+        <tr><th>Item</th><th>Quantity</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Feed</td><td>300 kg</td><td>Available</td></tr>
+        <tr><td>Vaccine A</td><td>20 doses</td><td>Low Stock</td></tr>
+        <tr><td>Ear Tags</td><td>150 units</td><td>Available</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>🔐 User Role Access</h2>
+    <table>
+      <thead>
+        <tr><th>Role</th><th>Can View</th><th>Can Edit</th><th>Restricted Sections</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Admin</td><td>✔️</td><td>✔️</td><td>None</td></tr>
+        <tr><td>Vet</td><td>✔️</td><td>✔️</td><td>Admin Config</td></tr>
+        <tr><td>Staff</td><td>✔️</td><td>❌</td><td>Genetic Info, Inventory</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/leaflet/dist/leaflet.js"></script>
+  <script>
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawCharts);
+
+    function drawCharts() {
+      const healthData = google.visualization.arrayToDataTable([
+        ['Time', 'Temperature', 'Heart Rate', 'Breathing Rate'],
+        ['08:00', 38.5, 72, 30],
+        ['12:00', 39.1, 78, 34],
+        ['16:00', 39.6, 82, 36],
+        ['20:00', 38.9, 75, 31]
+      ]);
+      const healthOptions = {
+        curveType: 'function',
+        legend: { position: 'bottom' }
+      };
+      new google.visualization.LineChart(document.getElementById('health_chart')).draw(healthData, healthOptions);
+
+      const pieData = google.visualization.arrayToDataTable([
+        ['Status', 'Count'],
+        ['Healthy', 24],
+        ['Warning', 6],
+        ['Critical', 2]
+      ]);
+      new google.visualization.PieChart(document.getElementById('status_pie_chart')).draw(pieData, {});
+
+      const behaviorData = google.visualization.arrayToDataTable([
+        ['Cow ID', 'Steps', 'Rumination', 'Rest Hours'],
+        ['201', 12000, 300, 5],
+        ['202', 10000, 280, 6],
+        ['203', 13000, 310, 4]
+      ]);
+      new google.visualization.ColumnChart(document.getElementById('behavior_chart')).draw(behaviorData);
+    }
+
+    const map = L.map('map').setView([10.52, 76.21], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+    L.marker([10.52, 76.21]).addTo(map).bindPopup('Cow 201').openPopup();
+    L.marker([10.525, 76.215]).addTo(map).bindPopup('Cow 202');
+  </script>
+</body>
+</html>
