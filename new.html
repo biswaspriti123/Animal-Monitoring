@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Livestock Monitoring Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8f9fa;
+    }
+    .header {
+      background-color: #2e8b57;
+      color: white;
+      padding: 1rem 0;
+      text-align: center;
+    }
+    .card {
+      border-radius: 15px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .breed-card img {
+      max-height: 200px;
+      object-fit: cover;
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+    }
+    .btn-custom {
+      background-color: #2e8b57;
+      color: white;
+    }
+    .btn-custom:hover {
+      background-color: #256d47;
+    }
+    footer {
+      background-color: #2e8b57;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>Livestock Monitoring System</h1>
+    <p>Real-time Health & Breed Info Dashboard</p>
+  </header>
+
+  <main class="container py-5">
+    <div class="row g-4">
+      <!-- Breed 1 Card -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card breed-card">
+          <img src="https://source.unsplash.com/featured/?cow" class="card-img-top" alt="Ongole">
+          <div class="card-body">
+            <h5 class="card-title">Ongole</h5>
+            <p class="card-text">A hardy breed known for strength and milk yield. Click below for temperature & THI status.</p>
+            <a href="breed.html?breed=Ongole" class="btn btn-custom w-100">View Info</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Breed 2 Card -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card breed-card">
+          <img src="https://source.unsplash.com/featured/?indian-cow" class="card-img-top" alt="Gir">
+          <div class="card-body">
+            <h5 class="card-title">Gir</h5>
+            <p class="card-text">Gir cows are renowned for their milk quality. Check latest environmental stats below.</p>
+            <a href="breed.html?breed=Gir" class="btn btn-custom w-100">View Info</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- More breeds can be added similarly -->
+
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 Livestock Monitoring System | Powered by Firebase & Arduino
+  </footer>
+</body>
+</html>
